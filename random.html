@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ทอยลูกเต๋า</title>
+<style>
+body {
+  font-family: sans-serif;
+  text-align: center;
+  background: #fdfdfd;
+  margin: 0;
+  padding: 20px;
+}
+h1 {
+  margin-bottom: 20px;
+}
+#dice {
+  width: 500px;
+  height: 500px;
+  margin: 20px auto;
+  background: white;
+  border: 8px solid #333;
+  border-radius: 20px;
+  position: relative;
+  box-sizing: border-box;
+}
+.dot {
+  width: 80px;
+  height: 80px;
+  background: #333;
+  border-radius: 50%;
+  position: absolute;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+#result {
+  font-size: 36px;
+  margin-top: 20px;
+  font-weight: bold;
+}
+button {
+  margin-top: 20px;
+  padding: 12px 25px;
+  font-size: 18px;
+  background-color: #6cc5d6;
+  border: none;
+  color: white;
+  border-radius: 8px;
+  cursor: pointer;
+}
+button:hover {
+  background-color: #5ab1c1;
+}
+</style>
+</head>
+<body>
+
+<h1>🎲 ทอยลูกเต๋า</h1>
+<div id="dice"></div>
+<div id="result">ผลลัพธ์: -</div>
+<br>
+<button onclick="rollDice()">ทอย!</button>
+
+<script>
+// ตำแหน่ง dot ลูกเต๋า (1-6) เป็น % ของลูกเต๋า
+const diceDots = {
+  1: [[50,50]],
+  2: [[25,25],[75,75]],
+  3: [[25,25],[50,50],[75,75]],
+  4: [[25,25],[25,75],[75,25],[75,75]],
+  5: [[25,25],[25,75],[50,50],[75,25],[75,75]],
+  6: [[25,25],[25,50],[25,75],[75,25],[75,50],[75,75]]
+};
+
+const dice = document.getElementById('dice');
+const resultDiv = document.getElementById('result');
+
+// ขนาด dot
+const dotSize = 80;
+
+// สร้าง dot ทั้งหมดล่วงหน้า
+for(let i=0;i<6;i++){
+  const dot = document.createElement('div');
+  dot.classList.add('dot');
+  dice.appendChild(dot);
+}
+
+function rollDice(){
+  const result = Math.floor(Math.random()*6)+1; // 1-6
+  const dots = dice.querySelectorAll('.dot');
+  
+  // ซ่อน dot ทั้งหมด
+  dots.forEach(dot => dot.style.opacity = 0);
+  
+  // วาง dot ตามหน้าลูกเต๋า
+  const positions = diceDots[result];
+  positions.forEach((pos,i)=>{
+    dots[i].style.left = `calc(${pos[0]}% - ${dotSize/2}px)`; // กึ่งกลาง dot
+    dots[i].style.top = `calc(${pos[1]}% - ${dotSize/2}px)`;  // กึ่งกลาง dot
+    dots[i].style.opacity = 1;
+  });
+
+  // แสดงผลลัพธ์บนหน้า
+  resultDiv.textContent = "ผลลัพธ์: " + result;
+}
+</script>
+
+</body>
+</html>
