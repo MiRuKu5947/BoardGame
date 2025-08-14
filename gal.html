@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <title>สถานที่ท่องเที่ยว</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f9f9f9;
+      padding: 20px;
+    }
+
+    h1, h2 {
+      text-align: center;
+    }
+
+    #container {
+      max-width: 1200px;
+      margin: 0 auto; /* จัดให้อยู่ตรงกลาง */
+    }
+
+    .places {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .place {
+      background: white;
+      border-radius: 10px;
+      padding: 10px;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    img {
+      max-width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 8px;
+    }
+
+    .place label {
+      display: block;
+      margin-top: 8px;
+      cursor: pointer;
+    }
+
+    .link-message {
+      margin-top: 8px;
+      font-size: 0.9em;
+      color: #0077cc;
+    }
+
+    .link-message a {
+      text-decoration: none;
+      color: #0077cc;
+    }
+
+    .link-message a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+<h1> คลัง Check-In </h1>
+<div id="container"></div>
+
+<script>
+const placesData = {
+  "ภาคใต้": [
+    { name: "เกาะสิมิลัน  จังหวัดพังงา", img: "image/tai/similan.png", link: "https://th.wikipedia.org/wiki/อุทยานแห่งชาติหมู่เกาะสิมิลัน" },
+    { name: "ย่านเมืองเก่าสงขลา จังหวะสงขลา", img: "image/tai/old town.png", link: "https://th.wikipedia.org/wiki/ย่านเมืองเก่าสงขลา" },
+    { name: "สวนดอกไม้เมืองหนาวเบตง จังหวัดยะลา", img: "image/tai/Betong flower.png", link: "https://jubileetravelthai.com/%E0%B8%AA%E0%B8%A7%E0%B8%99%E0%B8%AB%E0%B8%A1%E0%B8%B7%E0%B9%88%E0%B8%99%E0%B8%9A%E0%B8%B8%E0%B8%9B%E0%B8%9C%E0%B8%B2-%E0%B8%97%E0%B8%B5%E0%B9%88%E0%B8%99%E0%B8%B5%E0%B9%88%E0%B9%80%E0%B8%9A/" },
+    { name: "ศาลเจ้าแม่ลิ้มกอเหนียว จังหวัดปัตตานี", img: "image/tai/monk.png", link: "https://www.pattanicity.go.th/travel/detail/10" },
+    { name: "สถานีรถไฟกันตัง จังหวัดตรัง", img: "image/tai/Gantang.png", link: "https://th.wikipedia.org/wiki/สถานีรถไฟกันตัง" }
+  ],
+  "ภาคกลาง": [
+    { name: "อุโมงค์ไม้ไผ่ จังหวัดนครนายก", img: "image/middle/Bambo.png", link: "https://travel.trueid.net/detail/j15lJjjznAjB" },
+    { name: "เขื่อนป่าสักชลสิทธิ์ จังหวัดลพบุรี", img: "image/middle/Pa Sak.png", link: "https://th.wikipedia.org/wiki/เขื่อนป่าสักชลสิทธิ์" },
+    { name: "สวนสาธารณะและสวนพฤกษชาติศรีนครเขื่อนขันธ์ จังหวัดสมุทรปราการ", img: "image/middle/Sri Nakhon.png", link: "https://samutprakan.prd.go.th/th/content/category/detail/id/416/iid/344674" },
+    { name: "ตลาดน้ำทุ่งบัวแดง จังหวัดนครปฐม", img: "image/middle/Red Lotus.png", link: "https://mwsc.dit.go.th/viewFreshMarket.php?id=34853&page=1&subType=1" },
+    { name: "ตลาดน้ำอัมพวา จังหวัดสมุทรสงคราม", img: "image/middle/Amphawa.png", link: "https://th.wikipedia.org/wiki/ตลาดน้ำอัมพวา" }
+  ],
+  "ภาคเหนือ": [
+    { name: "ดอยอินทนนท์ จังหวัดเชียงใหม่", img: "image/on/intanon.jpg", link: "https://th.wikipedia.org/wiki/ตลาดน้ำอัมพวา" },
+    { name: "อุทยานแห่งชาติแจ้ซ้อน จังหวัดลำปาง", img: "image/on/jare son.jpg", link: "https://th.wikipedia.org/wiki/ตลาดน้ำอัมพวา" },
+    { name: "วัดร่องขุ่น จังหวัดเชียงราย", img: "image/on/Wat rong.jpg", link: "https://th.wikipedia.org/wiki/ตลาดน้ำอัมพวา" },
+    { name: "ดอยเสมอดาว จังหวัดน่าน", img: "image/on/star.png", link: "https://th.wikipedia.org/wiki/ตลาดน้ำอัมพวา" },
+    { name: "ทุ่งดอกบัวตอง จังหวัดแม่ฮ่องสอน", img: "image/on/bua.jpg", link: "https://th.wikipedia.org/wiki/ตลาดน้ำอัมพวา" }
+  ],
+  "ภาคตะวันตก": [
+    { name: "อุทยานแห่งชาติเอราวัณ จังหวัดกาญจนบุรี", img: "image/tok/arawan.jpg", link: "https://th.wikipedia.org/wiki/ตลาดน้ำอัมพวา" },
+    { name: "อุทยานแห่งชาติเขาสามร้อยยอด จังหวัดประจวบคีรีขันธ์", img: "image/tok/sam yod.jpg", link: "https://th.wikipedia.org/wiki/ตลาดน้ำอัมพวา" },
+    { name: "อุทยานแห่งชาติแก่งกระจาน จังหวัดเพชรบุรี", img: "image/tok/gang gajan.jpg", link: "https://th.wikipedia.org/wiki/ตลาดน้ำอัมพวา" },
+    { name: "อุทยานแห่งชาติตากสินมหาราช จังหวัดตาก", img: "image/tok/tak sin.jpg", link: "https://th.wikipedia.org/wiki/ตลาดน้ำอัมพวา" },
+    { name: "อุทยานแห่งชาติเขาแหลม จังหวัดกาญจนบุรี", img: "image/tok/kao.jpg", link: "https://th.wikipedia.org/wiki/ตลาดน้ำอัมพวา" }
+  ],
+  "ภาคตะวันออก": [
+    { name: "เกาะกูด จังหวัดตราด", img: "image/aok/gud.png", link: "https://th.wikipedia.org/wiki/ตลาดน้ำอัมพวา" },
+    { name: "ศูนย์ศึกษาการพัฒนาอ่าวคุ้งกระเบน จังหวัดจันทบุรี", img: "image/aok/Kung.png", link: "https://th.wikipedia.org/wiki/ตลาดน้ำอัมพวา" },
+    { name: "ละลุ จังหวัดสระแก้ว", img: "image/aok/Lalu.png", link: "https://th.wikipedia.org/wiki/ตลาดน้ำอัมพวา" },
+    { name: "ดาษดาแกลเลอรี่ จังหวัดปราจีนบุรี", img: "image/aok/gall.png", link: "https://th.wikipedia.org/wiki/ตลาดน้ำอัมพวา" },
+    { name: "ทุ่งโปรงทอง จังหวัดระยอง", img: "image/aok/tung.png", link: "https://th.wikipedia.org/wiki/ตลาดน้ำอัมพวา" }
+  ],
+  "ภาคอีสาน": [
+    { name: "เทศกาลผีตาโขน จังหวัดเลย", img: "image/esan/pee takon.jpg", link: "https://th.wikipedia.org/wiki/ตลาดน้ำอัมพวา" },
+    { name: "เทศกาลขึ้นเขาพนมรุ้ง จังหวัดบุรีรัมย์", img: "image/esan/panom rung.jpg", link: "https://th.wikipedia.org/wiki/ตลาดน้ำอัมพวา" },
+    { name: "ศูนย์ศึกษาวิจัยและพิพิธภัณฑ์ไดโนเสาร์ภูเวียง จังหวัดขอนแก่น", img: "image/esan/dino.jpg", link: "https://th.wikipedia.org/wiki/ตลาดน้ำอัมพวา" },
+    { name: "แหล่งอารยธรรมโบราณบ้านเชียง จังหวัดอุดรธานี", img: "image/esan/old ban.jpg", link: "https://th.wikipedia.org/wiki/ตลาดน้ำอัมพวา" },
+    { name: "ผาโสก จังหวัดอุบลราชธานี", img: "image/esan/pasok.jpg", link: "https://th.wikipedia.org/wiki/ตลาดน้ำอัมพวา" }
+  ]
+};
+
+// สร้างหมวดหมู่ตามภาค
+const container = document.getElementById('container');
+
+Object.entries(placesData).forEach(([region, places]) => {
+  const regionDiv = document.createElement('div');
+  regionDiv.className = 'region';
+
+  const title = document.createElement('h2');
+  title.textContent = region;
+  regionDiv.appendChild(title);
+
+  const placesContainer = document.createElement('div');
+  placesContainer.className = 'places';
+
+  places.forEach((place, index) => {
+    const div = document.createElement('div');
+    div.className = 'place';
+
+    const img = document.createElement('img');
+    img.src = place.img;
+
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.id = `${region}-place-${index}`;
+
+    const label = document.createElement('label');
+    label.htmlFor = checkbox.id;
+    label.textContent = place.name;
+
+    const linkMessage = document.createElement('div');
+    linkMessage.className = 'link-message';
+    linkMessage.style.display = 'none';
+
+    checkbox.addEventListener('change', () => {
+      if (checkbox.checked) {
+        linkMessage.innerHTML = `🔗 <a href="${place.link}" target="_blank">กดดูข้อมูลเพิ่มเติม</a>`;
+        linkMessage.style.display = 'block';
+      } else {
+        linkMessage.style.display = 'none';
+      }
+    });
+
+    div.appendChild(img);
+    div.appendChild(checkbox);
+    div.appendChild(label);
+    div.appendChild(linkMessage);
+
+    placesContainer.appendChild(div);
+  });
+
+  regionDiv.appendChild(placesContainer);
+  container.appendChild(regionDiv);
+});
+</script>
+
+</body>
+</html>
